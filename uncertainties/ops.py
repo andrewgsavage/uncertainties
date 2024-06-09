@@ -753,6 +753,7 @@ def le_on_aff_funcs(self, y_with_uncert):
     return (lt_on_aff_funcs(self, y_with_uncert)
             or eq_on_aff_funcs(self, y_with_uncert))
 
+
 def add_comparative_ops(cls):
 
     def to_affine_scalar(x):

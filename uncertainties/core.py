@@ -46,6 +46,7 @@ from uncertainties.ops import (
     modified_operators,
     modified_ops_with_reflection
 )
+from uncertainties.ufloatnumpy import UFloatNumpy
 
 # Attributes that are always exported (some other attributes are
 # exported only if the NumPy module is available...):
@@ -341,7 +342,7 @@ class LinearCombination(object):
     def __setstate__(self, state):
         (self.linear_combo,) = state
 
-class AffineScalarFunc(object):
+class AffineScalarFunc(UFloatNumpy):
     """
     Affine functions that support basic mathematical operations
     (addition, etc.).  Such functions can for instance be used for
@@ -658,17 +659,20 @@ class AffineScalarFunc(object):
             # instance might contain slots):
             setattr(self, name, value)
 
+def wrap(*args, **kwargs):
+    return _wrap(AffineScalarFunc, *args, **kwargs)
+    
 ops.add_arithmetic_ops(AffineScalarFunc)
 ops.add_comparative_ops(AffineScalarFunc) 
 to_affine_scalar = AffineScalarFunc._to_affine_scalar
-
+AffineScalarFunc._add_numpy_arithmetic_ufuncs()
+AffineScalarFunc._add_numpy_comparative_ufuncs()
+AffineScalarFunc.wrap = wrap
 # Nicer name, for users: isinstance(ufloat(...), UFloat) is
 # True. Also: isinstance(..., UFloat) is the test for "is this a
 # number with uncertainties from the uncertainties package?":
 UFloat = AffineScalarFunc
 
-def wrap(*args, **kwargs):
-    return _wrap(AffineScalarFunc, *args, **kwargs)
 ###############################################################################
 
 class NegativeStdDev(Exception):
